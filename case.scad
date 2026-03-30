@@ -38,10 +38,19 @@ KEYBOARD_USB_PORT = [12.3, 17.2];
 
 KEYBOARD_TRRS_PORT = [4.3, -34.7];
 
+KEYBOARD_FEET_LOCATIONS = [
+  [8.3, 13.2],
+  [71.5, 20.3],
+  [134.6, 13.2],
+  [134.6, -37.0],
+  [69.3, -53.8],
+  [16.5, -60.6],
+];
+
 // Case parameters
 PCB_WIDTH = 1.6;
 
-INSIDE_CLEARANCE = 0.2;
+INSIDE_CLEARANCE = 1.0;
 
 INSIDE_HEIGHT = 12.5;
 CASE_WALL_THICKNESS = 2.5;
@@ -49,6 +58,9 @@ CASE_BOTTOM_THICKNESS = 2.0;
 
 CHAMFER_OUTSIDE = 1.0;
 CHAMFER_INSIDE = 0.5;
+
+FOOT_DIAMETER = 10.6;
+FOOT_RECESS = 0.8;
 
 // case modules
 
@@ -91,8 +103,11 @@ module case_body() {
     up(CASE_BOTTOM_THICKNESS) {
       case_inside();
     }
-    for (hole = KEYBOARD_MOUNTING_HOLES) {
-      translate(hole) moutnting_hole();
+    for (hole_pos = KEYBOARD_MOUNTING_HOLES) {
+      translate(hole_pos) moutnting_hole();
+    }
+    for (foot = KEYBOARD_FEET_LOCATIONS) {
+      translate(foot) foot_hole();
     }
     left(INSIDE_CLEARANCE)
       up(CASE_BOTTOM_THICKNESS + 3)
@@ -118,6 +133,10 @@ module usbc_hole() {
 module trrs_hole() {
   right(e)
     xcyl(h=CASE_WALL_THICKNESS + 2 * e, d=6, chamfer=-0.0, anchor=RIGHT);
+}
+
+module foot_hole() {
+  cyl(h=FOOT_RECESS, d=FOOT_DIAMETER);
 }
 
 // visualization modules
