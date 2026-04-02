@@ -47,20 +47,27 @@ KEYBOARD_FEET_LOCATIONS = [
   [16.5, -60.6],
 ];
 
+KEYBOARD_ROUND_CORNERS_OUTSIDE = [1, 1, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1];
+KEYBOARD_ROUND_CORNERS_INSIDE = [0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 6, 0, 1];
+//KEYBOARD_ROUND_CORNERS_INSIDE = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+
 // Case parameters
 PCB_WIDTH = 1.6;
 
 INSIDE_CLEARANCE = 1.2;
 
-INSIDE_HEIGHT = 10.5;
-CASE_WALL_THICKNESS = 3.5;
+INSIDE_HEIGHT = 12.5;
+CASE_WALL_THICKNESS = 3.0;
 CASE_BOTTOM_THICKNESS = 2.0;
 
-CHAMFER_OUTSIDE = 2.0;
-CHAMFER_INSIDE = 0.5;
+CHAMFER_OUTSIDE = 1.5;
+CHAMFER_INSIDE = 0.25;
 
 FOOT_DIAMETER = 10.6;
 FOOT_RECESS = 0.8;
+
+CASE_ROUND_CORNER_OUTSIDE_SIZE = 2.25;
+CASE_ROUND_CORNER_INSIDE_SIZE = 0.8;
 
 // case modules
 
@@ -71,11 +78,12 @@ module case_outside() {
     closed=true,
     check_valid=false
   );
+  rounded_path = round_corners(offset_path, r=KEYBOARD_ROUND_CORNERS_OUTSIDE * CASE_ROUND_CORNER_OUTSIDE_SIZE);
   offset_sweep(
-    offset_path,
+    rounded_path,
     height=INSIDE_HEIGHT + CASE_BOTTOM_THICKNESS,
-    bottom=os_chamfer(width=CHAMFER_OUTSIDE),
-    top=os_chamfer(width=CHAMFER_OUTSIDE),
+    bottom=os_chamfer(width=CHAMFER_OUTSIDE, angle=38),
+    top=os_chamfer(width=CHAMFER_OUTSIDE, angle=38),
     check_valid=false,
     offset="delta"
   );
@@ -88,8 +96,9 @@ module case_inside() {
     closed=true,
     check_valid=false
   );
+  rounded_path = round_corners(offset_path, r=KEYBOARD_ROUND_CORNERS_INSIDE * CASE_ROUND_CORNER_INSIDE_SIZE);
   offset_sweep(
-    offset_path,
+    rounded_path,
     height=INSIDE_HEIGHT + e,
     top=os_chamfer(width=-CHAMFER_INSIDE),
     check_valid=false,
@@ -125,7 +134,7 @@ module moutnting_hole() {
 
 module usbc_hole() {
   hull()
-    xcopies(11 - 6)
+    xcopies(10.5 - 6)
       fwd(e)
         ycyl(h=CASE_WALL_THICKNESS + 2 * e, d=7.0, chamfer=-0.0, anchor=FWD);
 }
